@@ -1,27 +1,45 @@
-.PHONY: all clean
+REPO=deadman
+CONTAINER=quay.io/shelman/deadman
+VERSION ?= $(shell ./hacks/git-version)
+LD_FLAGS="-w -s -extldflags \"-static\" "
 
-all: build
+$( shell mkdir -p _release )
 
-EXE = $(GOPATH)/bin/deadman
-SRC = $(shell find ./ -type f -name '*.go')
-
-$(EXE): $(SRC)
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-s -w -static"' -o $(EXE) .
-
-build: $(EXE)
-
-.PHONY: dep
-dep:
-ifeq ($(shell command -v dep 2> /dev/null),)
-	go get -u -v github.com/golang/dep/cmd/dep
-endif
-
-.PHONY: deps
-deps: dep
-	dep ensure -v
-
-docker: deps
-	docker build -t deadman .
+default: format format-verify build
 
 clean:
-	rm -f $(EXE)
+	@rm -r _release
+
+test: format-verify
+	@echo "----- running tests -----"
+	@go test -v -i $(shell go list ./... | grep -v '/vendor/')
+	@go test -v $(shell go list ./... | grep -v '/vendor/')
+
+build:
+	@echo "----- running release build -----"
+	@go build -v -o _release/$(REPO) -ldflags $(LD_FLAGS) 
+
+container:
+	@docker build -t $(CONTAINER):$(VERSION) --file Dockerfile .
+
+container-push:
+	@docker push $(CONTAINER):$(VERSION)
+
+download:
+	@go mod download
+
+setup:
+	@go get -u golang.org/x/tools/cmd/goimports
+
+format:
+	@echo "----- running gofmt -----"
+	@gofmt -w -s *.go
+	@echo "----- running goimports -----"
+	@goimports -w *.go
+
+format-verify:
+	@echo "----- running gofmt verify -----"
+	@hacks/verify-gofmt
+	@echo "----- running goimports verify -----"
+	@hacks/verify-goimports
+
