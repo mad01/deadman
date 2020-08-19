@@ -17,5 +17,6 @@ require (
 	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e
 	github.com/prometheus/procfs v0.0.0-20180725123919-05ee40e3a273
+	github.com/stretchr/testify v1.6.1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
