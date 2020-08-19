@@ -1,4 +1,4 @@
-name: push go build/test
+name: push go build/test/publish
 
 on:
   push:
@@ -12,6 +12,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    # Build the Docker image
     - name: Build
       run: make container        
+
+    - name: Publish Image
+      uses: craftech-io/package-action@v3.1.0
+      with:
+        tags: latest
+        access_token: ${{ secrets.GITHUB_TOKEN }}
