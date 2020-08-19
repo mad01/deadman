@@ -1,5 +1,5 @@
 REPO=deadman
-CONTAINER=docker.pkg.github.com/mad01/deadman
+CONTAINER=quay.io/shelman/deadman
 VERSION ?= $(shell ./hacks/git-version)
 LD_FLAGS="-w -s -extldflags \"-static\" "
 
