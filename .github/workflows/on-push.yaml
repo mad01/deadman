@@ -15,8 +15,16 @@ jobs:
     - name: Build
       run: make container        
 
-    - name: Publish Image
-      uses: craftech-io/package-action@v3.1.0
+    - name: Get git short sha
+      id: get_version
+      run: echo ::set-env name=SHORT_SHA::$(echo ${GITHUB_SHA:8})
+
+    - if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        tags: latest
-        access_token: ${{ secrets.GITHUB_TOKEN }}
+        name: myDocker/repository
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: "latest,${{ env.SHORT_SHA }}"
+
