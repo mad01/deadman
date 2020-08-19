@@ -10,22 +10,21 @@ jobs:
     steps:
 
     - name: Checkout
+      id: checkout
       uses: actions/checkout@master
 
     - name: Build
+      id: build
       run: make container        
 
-    - name: Get git short sha
-      id: get_version
-      run: echo ::set-env name=SHORT_SHA::$(echo ${GITHUB_SHA:8})
-
-    - if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      name: Publish to Registry
+    - name: Publish to Registry
+      id: publish_to_registry
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: shelman/deadman
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tags: "latest,${{ env.SHORT_SHA }}"
+        tags: "latest,${GITHUB_SHA::8}"
         registry: quay.io
 
