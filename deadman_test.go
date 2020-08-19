@@ -1,8 +1,11 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"time"
+
+	"github.com/go-kit/kit/log"
 )
 
 func TestDeadManDoesntTrigger(t *testing.T) {
@@ -11,10 +14,11 @@ func TestDeadManDoesntTrigger(t *testing.T) {
 
 	called := false
 
+	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
 	d := newDeadMan(pinger.C, 20*time.Millisecond, func() error {
 		called = true
 		return nil
-	})
+	}, logger)
 
 	go d.Run()
 	defer d.Stop()
@@ -31,10 +35,11 @@ func TestDeadManTriggers(t *testing.T) {
 
 	called := false
 
+	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
 	d := newDeadMan(pinger.C, 20*time.Millisecond, func() error {
 		called = true
 		return nil
-	})
+	}, logger)
 
 	go d.Run()
 	defer d.Stop()
