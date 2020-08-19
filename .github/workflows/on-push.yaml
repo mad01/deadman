@@ -23,7 +23,7 @@ jobs:
       name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: myDocker/repository
+        name: quay.io/shelman/deadman
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: "latest,${{ env.SHORT_SHA }}"
