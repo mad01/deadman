@@ -17,6 +17,16 @@ jobs:
     - id: get_version
       run: echo ::set-env name=SHORT_SHA::$(./hacks/git-version)
 
+    - id: extract_branch
+      shell: bash
+      run: echo ::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})
+
+    - id: set_container_tag 
+      shell: bash
+      run: echo ::set-env name=CONTAINER_TAG::$(echo ${TAG})
+      env:
+        TAG: "${{ env.BRANCH_NAME }}-${{ env.SHORT_SHA }}"
+
     - id: publish_to_registry
       # if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: elgohr/Publish-Docker-Github-Action@master
@@ -24,10 +34,11 @@ jobs:
         name: shelman/deadman
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tags: "latest,${{ env.SHORT_SHA }}"
+        tags: "${{ env.CONTAINER_TAG }}"
         registry: quay.io
 
     - id: comment_on_pr
+      if: github.event_name == 'pull_request'
       uses: actions/github-script@v2
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
@@ -36,6 +47,6 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: '👋 docker image quay.io/shelman/deadman:${{ env.SHORT_SHA }}'
+            body: '👋 docker image quay.io/shelman/deadman:${{ env.CONTAINER_TAG }}'
           })
 
