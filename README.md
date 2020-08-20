@@ -40,3 +40,5 @@ deployed deadman process.
 
 Run an alertmanager co-located with the deadman process which will notify you for
 all the alerts it receives.
+
+
