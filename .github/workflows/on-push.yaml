@@ -9,20 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Checkout
-      id: checkout
+    - id: checkout
       uses: actions/checkout@master
 
-    - name: Build
-      id: build
+    - id: build
       run: make container        
 
-    - name: Get git short sha
-      id: get_version
+    - id: get_version
       run: echo ::set-env name=SHORT_SHA::$(./hacks/git-version)
 
-    - name: Publish to Registry
-      id: publish_to_registry
+    - id: publish_to_registry
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
