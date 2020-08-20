@@ -39,16 +39,17 @@ jobs:
         tags: "${{ env.CONTAINER_TAG }}"
         registry: quay.io
 
-    - id: comment_on_pr
-      # if: github.event_name == 'pull_request'
-      uses: actions/github-script@v2
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          github.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '👋 docker image quay.io/shelman/deadman:${{ env.CONTAINER_TAG }}'
-          })
 
+#    - id: comment_on_pr
+#      # if: github.event_name == 'pull_request'
+#      uses: actions/github-script@v2
+#      with:
+#        github-token: ${{secrets.GITHUB_TOKEN}}
+#        script: |
+#          github.issues.createComment({
+#            issue_number: context.issue.number,
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            body: '👋 docker image quay.io/shelman/deadman:${{ env.CONTAINER_TAG }}'
+#          })
+#
