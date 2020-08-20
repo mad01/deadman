@@ -1,6 +1,6 @@
 name: push go build/test/publish
 
-on: [pull_request, push]
+on: [push]
 
 jobs:
   go-build:
