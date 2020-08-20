@@ -19,7 +19,7 @@ jobs:
       run: echo ::set-env name=SHORT_SHA::$(./hacks/git-version)
 
     - id: publish_to_registry
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      # if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: shelman/deadman
@@ -29,8 +29,8 @@ jobs:
         registry: quay.io
 
     - id: comment_on_pr
-      if: github.event_name == 'pull_request'
       uses: actions/github-script@v2
+      if: github.event_name == 'pull_request'
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
