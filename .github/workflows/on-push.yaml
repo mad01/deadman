@@ -11,9 +11,6 @@ jobs:
     - id: checkout
       uses: actions/checkout@master
 
-    - id: build
-      run: make container        
-
     - id: get_version
       run: echo ::set-env name=SHORT_SHA::$(./hacks/git-version)
 
@@ -21,12 +18,16 @@ jobs:
       shell: bash
       run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
 
-
     - id: set_container_tag 
       shell: bash
       run: echo ::set-env name=CONTAINER_TAG::$(echo ${TAG})
       env:
         TAG: "${{ env.BRANCH_NAME }}-${{ env.SHORT_SHA }}"
+
+    - id: build
+      run: make container        
+      env:
+        VERSION: "${{ env.CONTAINER_TAG }}"
 
     - id: publish_to_registry
       # if: github.ref == 'refs/heads/master' && github.event_name == 'push'
