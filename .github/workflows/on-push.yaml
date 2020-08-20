@@ -39,6 +39,14 @@ jobs:
         tags: "${{ env.CONTAINER_TAG }}"
         registry: quay.io
 
+    - name: comment PR
+      if: github.event_name == 'pull_request'
+      uses: unsplash/comment-on-pr@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        msg: "👋 docker image quay.io/shelman/deadman:${{ env.CONTAINER_TAG }}"
+
 
 #    - id: comment_on_pr
 #      # if: github.event_name == 'pull_request'
