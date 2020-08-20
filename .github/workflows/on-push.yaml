@@ -40,3 +40,4 @@ jobs:
             repo: context.repo.repo,
             body: '👋 docker image quay.io/shelman/deadman:${{ env.SHORT_SHA }}'
           })
+
